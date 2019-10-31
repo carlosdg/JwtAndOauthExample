@@ -8,7 +8,8 @@ const app = express()
 app.use(cors())
 
 // API
-app.get('/api', (req, res) => res.send('hello world!'))
+app.get('/api', (req, res) => res.json({ message: "My message" }))
+app.post('/api/posts', (req, res) => res.json({ message: "Post created" }))
 
 // Run server
 app.listen(3000, () => console.log('API running on port 3000'))
