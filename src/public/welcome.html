@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Welcome page</title>
+  </head>
+  <body>
+    <a href="/">Go to home.</a>
+    <script>
+      // Get the access token from the query parameter
+      const query = window.location.search.substring(1);
+      const token = query.split("access_token=")[1];
+
+      // Call the user info API
+      fetch("https://api.github.com/user", {
+        headers: { Authorization: "token " + token }
+      })
+        .then(res => res.json())
+        .then(res => {
+          const nameNode = document.createTextNode(
+            `Welcome ${res.name}. You have ${res.followers} followers on Github.`
+          );
+          document.body.appendChild(nameNode);
+        });
+    </script>
+  </body>
+</html>
