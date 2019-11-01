@@ -1,25 +1,36 @@
-const express = require('express')
-const jwt = require('jsonwebtoken')
-const cors = require('cors')
+const express = require("express");
+const jwt = require("jsonwebtoken");
+const cors = require("cors");
+const verifyToken = require("./verifyToken");
 
-const app = express()
+const app = express();
+const JWT_SECRET = "alumno2019";
 
 // Express middleware
-app.use(cors())
+app.use(cors());
 
-// API
-app.get('/api', (req, res) => res.json({ message: "My message" }))
-app.post('/api/posts', (req, res) => res.json({ message: "Post created" }))
-app.post('/api/login', (req, res) => {
-    const user = {
-        id: 1,
-        name: "pepito",
-        email: "pepito@gmail.com"
+// API endpoints
+app.get("/api", (req, res) => res.json({ message: "My message" }));
+
+app.post("/api/login", (req, res) => {
+  const user = {
+    id: 1,
+    name: "pepito",
+    email: "pepito@gmail.com"
+  };
+
+  jwt.sign({ user }, JWT_SECRET, (err, token) => res.json({ token }));
+});
+
+app.post("/api/posts", verifyToken, (req, res) => {
+  jwt.verify(req.token, JWT_SECRET, (err, authData) => {
+    if (err) {
+      res.sendStatus(403);
+    } else {
+      res.json({ message: "Post created", authData });
     }
-    const secret = 'alumno2019'
-
-    jwt.sign({ user }, secret, (err, token) => res.json({ token }))
-})
+  });
+});
 
 // Run server
-app.listen(3000, () => console.log('API running on port 3000'))
+app.listen(3000, () => console.log("API running on port 3000"));
