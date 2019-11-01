@@ -19,7 +19,8 @@ app.post("/api/login", (req, res) => {
     email: "pepito@gmail.com"
   };
 
-  jwt.sign({ user }, JWT_SECRET, (err, token) => res.json({ token }));
+  const token = jwt.sign({ user }, JWT_SECRET, { expiresIn: "20s" });
+  res.json({ token });
 });
 
 app.post("/api/posts", verifyToken, (req, res) => {
